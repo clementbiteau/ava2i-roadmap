@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVA2i — Centres de Compétences IA · 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ── RESET & TOKENS ───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:      #F5F3EE;
+  --bg1:     #ECEAE4;
+  --white:   #FFFFFF;
+  --ink:     #1A1A2E;
+  --ink2:    #2D2D44;
+  --muted:   #7C7C99;
+  --border:  rgba(26,26,46,.1);
+  --borderh: rgba(26,26,46,.2);
+
+  --c1: #0F7FBF;   /* Data Platform — blue */
+  --c2: #7C3AED;   /* IA Gen & Agentique — violet */
+  --c3: #047857;   /* Conseil & Sécurité — green */
+
+  --c1-bg: rgba(15,127,191,.07);
+  --c2-bg: rgba(124,58,237,.07);
+  --c3-bg: rgba(4,120,87,.07);
+
+  --ff-d: 'Fraunces', Georgia, serif;
+  --ff-s: 'Outfit', system-ui, sans-serif;
+  --ff-m: 'JetBrains Mono', monospace;
+
+  --r: 6px;
+  --nav-w: 220px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--ff-s);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+}
+
+/* ── SIDEBAR NAV ──────────────────────────────────────── */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--nav-w); z-index: 200;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sidebar-top {
+  padding: 32px 28px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.sidebar-logo {
+  font-family: var(--ff-d);
+  font-size: 1.5rem; font-weight: 900;
+  color: #fff; letter-spacing: -.02em;
+  margin-bottom: 4px;
+}
+.sidebar-logo em { font-style: italic; color: #F5C842; }
+
+.sidebar-tagline {
+  font-family: var(--ff-m);
+  font-size: .58rem; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(255,255,255,.3);
+}
+
+.sidebar-nav {
+  flex: 1; padding: 24px 16px;
+  display: flex; flex-direction: column; gap: 2px;
+  overflow-y: auto;
+}
+
+.nav-group-label {
+  font-family: var(--ff-m);
+  font-size: .56rem; letter-spacing: .18em;
+  text-transform: uppercase; color: rgba(255,255,255,.25);
+  padding: 16px 12px 8px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 5px;
+  font-size: .84rem; font-weight: 400;
+  color: rgba(255,255,255,.5);
+  text-decoration: none; cursor: pointer;
+  transition: background .15s, color .15s;
+  border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); }
+.nav-item.active { background: rgba(255,255,255,.1); color: #fff; font-weight: 500; }
+
+.nav-pip {
+  width: 7px; height: 7px; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sidebar-bottom {
+  padding: 20px 28px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.sidebar-conf {
+  font-family: var(--ff-m);
+  font-size: .56rem; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(255,255,255,.2);
+}
+
+/* ── MAIN ─────────────────────────────────────────────── */
+.main {
+  margin-left: var(--nav-w);
+  flex: 1; min-height: 100vh;
+}
+
+/* ── TABS ─────────────────────────────────────────────── */
+.tabs-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0;
+  padding: 0 48px;
+}
+.tab-btn {
+  font-family: var(--ff-s); font-size: .82rem; font-weight: 500;
+  color: var(--muted); padding: 16px 20px;
+  border: none; background: none; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  letter-spacing: .01em; white-space: nowrap;
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
+
+/* ── TAB PANELS ───────────────────────────────────────── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── PAGE HEADER ──────────────────────────────────────── */
+.page-header {
+  padding: 56px 48px 40px;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+}
+.ph-eyebrow {
+  font-family: var(--ff-m); font-size: .62rem;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ph-eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--muted); }
+.page-header h1 {
+  font-family: var(--ff-d); font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 900; line-height: 1.0; letter-spacing: -.02em;
+  color: var(--ink); margin-bottom: 14px;
+}
+.page-header h1 em { font-style: italic; font-weight: 300; }
+.page-header p { font-size: .97rem; color: var(--muted); max-width: 560px; line-height: 1.75; }
+
+.header-kpis {
+  display: flex; gap: 0; margin-top: 36px;
+  border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden; width: fit-content;
+  background: var(--bg);
+}
+.hkpi {
+  padding: 16px 28px; border-right: 1px solid var(--border);
+}
+.hkpi:last-child { border-right: none; }
+.hkpi-n {
+  font-family: var(--ff-d); font-size: 1.9rem; font-weight: 900;
+  line-height: 1; color: var(--ink); margin-bottom: 3px; letter-spacing: -.02em;
+}
+.hkpi-l { font-family: var(--ff-m); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+/* ── CONTENT AREA ─────────────────────────────────────── */
+.content { padding: 48px; }
+
+/* ── SECTION LABEL ────────────────────────────────────── */
+.s-label {
+  font-family: var(--ff-m); font-size: .6rem;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--c, var(--muted));
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+.s-label::after {
+  content: ''; height: 1px; flex: 1; max-width: 60px;
+  background: linear-gradient(to right, var(--c, var(--muted)), transparent);
+  opacity: .4;
+}
+
+h2.section-h {
+  font-family: var(--ff-d); font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 900; line-height: 1.05; letter-spacing: -.02em;
+  color: var(--ink); margin-bottom: 12px;
+}
+h2.section-h em { font-style: italic; font-weight: 300; }
+
+.section-sub {
+  font-size: .92rem; color: var(--muted); max-width: 560px;
+  line-height: 1.78; margin-bottom: 44px;
+}
+
+/* ── CENTRES GRID ─────────────────────────────────────── */
+.centres-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-bottom: 56px;
+}
+@media(max-width:1100px){ .centres-grid { grid-template-columns: 1fr; } }
+
+.centre-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: box-shadow .25s, transform .25s cubic-bezier(.2,1,.3,1);
+}
+.centre-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.1); transform: translateY(-3px); }
+
+.cc-top {
+  padding: 28px 28px 22px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.cc-stripe {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--cc);
+}
+.cc-num {
+  font-family: var(--ff-m); font-size: .58rem;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--cc); margin-bottom: 14px;
+}
+.cc-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--cc-bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 14px;
+}
+.cc-name {
+  font-family: var(--ff-d); font-size: 1.15rem; font-weight: 600;
+  color: var(--ink); line-height: 1.2; margin-bottom: 10px;
+}
+.cc-mission { font-size: .82rem; color: var(--muted); line-height: 1.7; }
+
+.cc-offers { padding: 20px 28px; border-bottom: 1px solid var(--border); }
+.co { display: flex; align-items: flex-start; gap: 8px; font-size: .8rem; color: var(--ink2); margin-bottom: 8px; }
+.co:last-child { margin-bottom: 0; }
+.co::before { content: '→'; color: var(--cc); flex-shrink: 0; font-size: .72rem; margin-top: 2px; }
+
+.cc-tags { padding: 18px 28px; display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 1px solid var(--border); }
+.ctag {
+  font-size: .68rem; padding: 3px 9px; border-radius: 100px;
+  border: 1px solid var(--border); color: var(--muted); letter-spacing: .03em;
+  transition: border-color .15s, color .15s;
+}
+.ctag:hover { border-color: var(--cc); color: var(--cc); }
+
+.cc-footer {
+  padding: 18px 28px; display: flex; gap: 20px;
+  background: var(--bg);
+}
+.cc-stat { display: flex; flex-direction: column; gap: 2px; }
+.cc-stat-n { font-family: var(--ff-m); font-size: .85rem; font-weight: 500; color: var(--cc); }
+.cc-stat-l { font-size: .66rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+
+/* ── LEADERS ──────────────────────────────────────────── */
+.leaders-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media(max-width:1100px){ .leaders-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width:640px){ .leaders-grid { grid-template-columns: 1fr; } }
+
+.leader-card {
+  background: var(--white);
+  border: 1px solid var(--border); border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow .2s, transform .2s;
+}
+.leader-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.08); transform: translateY(-2px); }
+
+.lc-header {
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--lc-bg);
+}
+.lc-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--lc); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ff-d); font-size: 1rem; font-weight: 600;
+  color: #fff;
+}
+.lc-info { flex: 1; }
+.lc-name { font-family: var(--ff-d); font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.lc-title { font-size: .78rem; color: var(--muted); margin-bottom: 6px; }
+.lc-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--ff-m); font-size: .56rem; letter-spacing: .08em;
+  padding: 2px 8px; border-radius: 2px;
+  background: rgba(59,130,246,.1); color: #3B82F6; border: 1px solid rgba(59,130,246,.2);
+}
+
+.lc-centre {
+  padding: 10px 24px;
+  font-family: var(--ff-m); font-size: .58rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--lc);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.lc-body { padding: 18px 24px; }
+.lc-skills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 14px; }
+.lc-skill {
+  font-size: .66rem; padding: 2px 8px; border-radius: 100px;
+  border: 1px solid var(--border); color: var(--muted);
+}
+.lc-exp { font-size: .8rem; color: var(--ink2); line-height: 1.65; }
+.lc-exp strong { color: var(--ink); }
+
+.lc-certs { padding: 14px 24px; display: flex; flex-wrap: wrap; gap: 5px; background: var(--bg); }
+.lc-cert {
+  font-family: var(--ff-m); font-size: .58rem; letter-spacing: .06em;
+  padding: 2px 8px; border-radius: 2px;
+  background: rgba(245,200,66,.1); color: #A07B00; border: 1px solid rgba(201,168,76,.25);
+}
+
+/* ── OFFRES MAP ───────────────────────────────────────── */
+.offres-map {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 2px; background: var(--border);
+  border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden; margin-bottom: 48px;
+}
+@media(max-width:900px){ .offres-map { grid-template-columns: 1fr 1fr; } }
+
+.offre-cell {
+  background: var(--white); padding: 22px 18px;
+  position: relative; transition: background .15s;
+}
+.offre-cell:hover { background: var(--bg); }
+.offre-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--oc); }
+.offre-num { font-family: var(--ff-m); font-size: .55rem; letter-spacing: .14em; text-transform: uppercase; color: var(--oc); margin-bottom: 8px; }
+.offre-name { font-size: .85rem; font-weight: 600; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
+.offre-centre { font-size: .72rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.offre-centre::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--oc); flex-shrink: 0; }
+
+/* ── STRATEGY ─────────────────────────────────────────── */
+.strat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media(max-width:860px){ .strat-grid { grid-template-columns: 1fr; } }
+
+.strat-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 8px; padding: 28px; position: relative; overflow: hidden;
+}
+.strat-card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 100%; height: 2px; background: var(--sc);
+}
+.strat-num { font-family: var(--ff-m); font-size: .58rem; color: var(--muted); letter-spacing: .14em; margin-bottom: 10px; }
+.strat-title { font-family: var(--ff-d); font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.strat-body { font-size: .82rem; color: var(--muted); line-height: 1.7; }
+.strat-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 14px; font-size: .68rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--sc); padding: 3px 10px; border: 1px solid var(--sc);
+  border-radius: 2px; opacity: .85;
+}
+
+/* ─────────────────────────────────────────────────────────
+   ROADMAP TAB — DRAG & DROP
+───────────────────────────────────────────────────────── */
+.roadmap-header {
+  padding: 48px 48px 32px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.roadmap-header h1 {
+  font-family: var(--ff-d); font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 900; line-height: 1.05; letter-spacing: -.02em;
+  color: var(--ink); margin-bottom: 10px;
+}
+.roadmap-header h1 em { font-style: italic; font-weight: 300; }
+.roadmap-header p { font-size: .92rem; color: var(--muted); max-width: 600px; line-height: 1.75; }
+
+.roadmap-legend {
+  display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px;
+}
+.legend-pill {
+  display: flex; align-items: center; gap: 7px;
+  font-size: .78rem; color: var(--ink2);
+}
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--ldc);
+}
+
+/* Controls */
+.roadmap-controls {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 48px;
+  background: var(--bg1); border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.rm-ctrl-label {
+  font-family: var(--ff-m); font-size: .6rem;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted);
+}
+.rm-btn {
+  font-family: var(--ff-s); font-size: .78rem; font-weight: 500;
+  padding: 6px 14px; border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--white); color: var(--ink2);
+  cursor: pointer; transition: all .15s;
+}
+.rm-btn:hover { border-color: var(--ink); color: var(--ink); }
+.rm-btn.danger { color: #DC2626; border-color: rgba(220,38,38,.25); }
+.rm-btn.danger:hover { background: rgba(220,38,38,.06); }
+
+/* Board */
+.rm-board {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0; min-height: 600px;
+  border-left: 1px solid var(--border);
+}
+
+.rm-col {
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  min-height: 600px;
+}
+.rm-col:last-child { border-right: none; }
+
+.rm-col-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  position: sticky; top: 53px; z-index: 10;
+}
+.rm-col-phase {
+  font-family: var(--ff-m); font-size: .58rem;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 4px;
+}
+.rm-col-title {
+  font-family: var(--ff-d); font-size: 1.1rem;
+  font-weight: 600; color: var(--ink); margin-bottom: 4px;
+}
+.rm-col-sub { font-size: .75rem; color: var(--muted); }
+.rm-col-count {
+  margin-top: 10px;
+  font-family: var(--ff-m); font-size: .62rem;
+  color: var(--muted);
+}
+
+.rm-col-body {
+  flex: 1; padding: 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: background .15s;
+}
+.rm-col-body.drag-over { background: rgba(0,0,0,.03); }
+.rm-col-body.drag-over-valid { background: rgba(15,127,191,.04); outline: 2px dashed rgba(15,127,191,.3); outline-offset: -4px; border-radius: 4px; }
+
+/* Task bricks */
+.task-brick {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px 16px;
+  cursor: grab; user-select: none;
+  position: relative; overflow: hidden;
+  transition: box-shadow .2s, transform .2s, border-color .2s;
+}
+.task-brick::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--tc);
+}
+.task-brick:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.1);
+  transform: translateY(-1px);
+  border-color: var(--borderh);
+}
+.task-brick:active { cursor: grabbing; box-shadow: 0 8px 32px rgba(0,0,0,.15); transform: scale(1.02); }
+.task-brick.dragging { opacity: .5; transform: rotate(1deg); }
+
+.tb-centre {
+  font-family: var(--ff-m); font-size: .55rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--tc); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.tb-centre-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--tc); flex-shrink: 0; }
+
+.tb-title { font-weight: 600; font-size: .85rem; color: var(--ink); margin-bottom: 4px; line-height: 1.3; }
+.tb-desc { font-size: .76rem; color: var(--muted); line-height: 1.55; margin-bottom: 10px; }
+
+.tb-footer { display: flex; align-items: center; justify-content: space-between; }
+.tb-effort {
+  font-family: var(--ff-m); font-size: .62rem; color: var(--muted);
+  display: flex; align-items: center; gap: 4px;
+}
+.tb-effort::before { content: '⏱'; font-size: .7rem; }
+.tb-owner {
+  font-size: .68rem; color: var(--muted);
+  background: var(--bg); padding: 2px 7px;
+  border-radius: 100px; border: 1px solid var(--border);
+}
+
+.task-brick.ghost {
+  opacity: .3; background: var(--bg);
+  pointer-events: none;
+}
+
+/* Add task button */
+.add-task-btn {
+  width: 100%; padding: 10px;
+  border: 1px dashed rgba(0,0,0,.12); border-radius: 5px;
+  background: none; cursor: pointer;
+  font-family: var(--ff-s); font-size: .8rem; color: var(--muted);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all .15s; margin-top: 4px;
+}
+.add-task-btn:hover { background: var(--white); border-color: var(--ink2); color: var(--ink); }
+.add-task-btn::before { content: '+'; font-size: 1rem; font-weight: 300; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.4); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--white); border-radius: 10px;
+  padding: 32px; width: 480px; max-width: 90vw;
+  box-shadow: 0 24px 80px rgba(0,0,0,.2);
+  transform: translateY(16px); transition: transform .2s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal h3 { font-family: var(--ff-d); font-size: 1.2rem; font-weight: 600; color: var(--ink); margin-bottom: 20px; }
+.modal-field { margin-bottom: 16px; }
+.modal-field label { display: block; font-size: .78rem; font-weight: 500; color: var(--ink2); margin-bottom: 6px; font-family: var(--ff-m); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; }
+.modal-field input,
+.modal-field textarea,
+.modal-field select {
+  width: 100%; padding: 9px 12px;
+  border: 1px solid var(--border); border-radius: 5px;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--ff-s); font-size: .84rem;
+  transition: border-color .15s;
+}
+.modal-field input:focus,
+.modal-field textarea:focus,
+.modal-field select:focus { outline: none; border-color: var(--ink); }
+.modal-field textarea { resize: vertical; min-height: 72px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.btn-cancel { font-family: var(--ff-s); font-size: .82rem; padding: 8px 16px; border: 1px solid var(--border); border-radius: 4px; background: none; cursor: pointer; color: var(--muted); }
+.btn-save { font-family: var(--ff-s); font-size: .82rem; font-weight: 600; padding: 8px 20px; border: none; border-radius: 4px; background: var(--ink); color: #fff; cursor: pointer; }
+.btn-cancel:hover { border-color: var(--ink); color: var(--ink); }
+.btn-save:hover { opacity: .88; }
+
+/* ── PRODUCTS TAB ──────────────────────────────────────── */
+.products-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-bottom: 40px;
+}
+@media(max-width:900px){ .products-grid { grid-template-columns: 1fr; } }
+
+.product-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: box-shadow .2s, transform .2s;
+}
+.product-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.08); transform: translateY(-2px); }
+.product-top {
+  padding: 28px 24px 20px; border-bottom: 1px solid var(--border);
+  background: var(--pt-bg);
+}
+.product-icon { font-size: 2rem; margin-bottom: 14px; }
+.product-name { font-family: var(--ff-d); font-size: 1.2rem; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.product-sub { font-size: .78rem; color: var(--muted); }
+.product-body { padding: 20px 24px; }
+.product-desc { font-size: .83rem; color: var(--ink2); line-height: 1.7; margin-bottom: 16px; }
+.product-features { display: flex; flex-direction: column; gap: 7px; }
+.pf { font-size: .8rem; color: var(--muted); display: flex; gap: 8px; align-items: flex-start; }
+.pf::before { content: '✓'; color: var(--pt); flex-shrink: 0; font-size: .72rem; margin-top: 2px; }
+.product-footer { padding: 16px 24px; background: var(--bg); display: flex; flex-wrap: wrap; gap: 5px; }
+.comp-tag {
+  font-family: var(--ff-m); font-size: .58rem; letter-spacing: .06em;
+  padding: 2px 7px; border-radius: 2px;
+  border: 1px solid var(--border); color: var(--muted);
+}
+
+/* ── REVEAL ───────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,1,.3,1), transform .7s cubic-bezier(.2,1,.3,1); }
+.reveal.v { opacity: 1; transform: none; }
+.d1 { transition-delay: .09s; } .d2 { transition-delay: .17s; } .d3 { transition-delay: .25s; }
+.reveal-left { opacity:0; transform: translateX(-28px); transition: opacity .7s cubic-bezier(.2,1,.3,1), transform .7s cubic-bezier(.2,1,.3,1); }
+.reveal-left.v { opacity:1; transform:none; }
+.reveal-scale { opacity:0; transform: scale(.92); transition: opacity .6s ease, transform .6s cubic-bezier(.34,1.56,.64,1); }
+.reveal-scale.v { opacity:1; transform:none; }
+
+/* ── PAGE HEADER ANIMATION ────────────────────────────── */
+.page-header .ph-eyebrow  { animation: slideInLeft .5s cubic-bezier(.2,1,.3,1) both; }
+.page-header h1           { animation: slideInUp .6s cubic-bezier(.2,1,.3,1) .08s both; }
+.page-header > p          { animation: fadeInUp .6s ease .18s both; }
+.page-header .header-kpis { animation: fadeInUp .6s ease .28s both; }
+
+@keyframes slideInLeft {
+  from { opacity:0; transform: translateX(-20px); }
+  to   { opacity:1; transform: none; }
+}
+@keyframes slideInUp {
+  from { opacity:0; transform: translateY(28px); }
+  to   { opacity:1; transform: none; }
+}
+@keyframes fadeInUp {
+  from { opacity:0; transform: translateY(14px); }
+  to   { opacity:1; transform: none; }
+}
+
+/* ── SHIMMER on header KPIs ───────────────────────────── */
+.hkpi { position: relative; overflow: hidden; }
+.hkpi::after {
+  content: '';
+  position: absolute; top:0; left:-100%; width:60%; height:100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+  transform: skewX(-20deg);
+  animation: shimmer 3.5s ease infinite;
+}
+@keyframes shimmer {
+  0%   { left: -100%; }
+  40%,100% { left: 160%; }
+}
+
+/* ── SIDEBAR ENTRANCE ─────────────────────────────────── */
+.sidebar { animation: sidebarIn .5s cubic-bezier(.2,1,.3,1) both; }
+@keyframes sidebarIn {
+  from { transform: translateX(-100%); opacity:0; }
+  to   { transform: none; opacity:1; }
+}
+.nav-item { position: relative; overflow: hidden; }
+.nav-item::after {
+  content: '';
+  position: absolute; left:0; top:50%; transform:translateY(-50%);
+  width: 2px; height: 0;
+  background: var(--c2);
+  transition: height .25s cubic-bezier(.2,1,.3,1);
+  border-radius: 2px;
+}
+.nav-item.active::after { height: 65%; }
+
+/* ── CENTRE CARDS ─────────────────────────────────────── */
+.centre-card {
+  transition: box-shadow .35s cubic-bezier(.2,1,.3,1),
+              transform .35s cubic-bezier(.2,1,.3,1),
+              border-color .2s;
+}
+.centre-card::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: 8px;
+  background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.12) 0%, transparent 60%);
+  opacity: 0; transition: opacity .3s; pointer-events: none;
+}
+.centre-card:hover::after { opacity: 1; }
+
+/* ── TAG HOVER RIPPLE ─────────────────────────────────── */
+.ctag {
+  transition: border-color .2s, color .2s, transform .15s, background .2s;
+}
+.ctag:hover { transform: translateY(-1px); background: rgba(0,0,0,.03); }
+
+/* ── TASK BRICK ENTRANCE ──────────────────────────────── */
+@keyframes brickIn {
+  from { opacity:0; transform: translateY(12px) scale(.97); }
+  to   { opacity:1; transform: none; }
+}
+.task-brick { animation: brickIn .35s cubic-bezier(.2,1,.3,1) both; }
+.task-brick:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,.12);
+  transform: translateY(-2px) scale(1.005);
+}
+
+/* ── DRAG GHOST GLOW ──────────────────────────────────── */
+.task-brick.dragging {
+  opacity:.45; transform: rotate(1.5deg) scale(1.03);
+  box-shadow: 0 16px 48px rgba(0,0,0,.2);
+}
+.rm-col-body.drag-over-valid {
+  background: rgba(15,127,191,.05);
+  outline: 2px dashed rgba(15,127,191,.35);
+  outline-offset: -4px;
+  border-radius: 4px;
+  animation: pulseOutline 1s ease infinite;
+}
+@keyframes pulseOutline {
+  0%,100% { outline-color: rgba(15,127,191,.35); }
+  50%      { outline-color: rgba(15,127,191,.7); }
+}
+
+/* ── MODAL ANIMATION ──────────────────────────────────── */
+.modal-overlay { transition: opacity .22s ease; }
+.modal {
+  transform: translateY(20px) scale(.97);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .22s ease;
+  opacity: 0;
+}
+.modal-overlay.open .modal { transform: none; opacity: 1; }
+
+/* ── FLOATING DOTS BACKGROUND ─────────────────────────── */
+.page-header { position: relative; overflow: hidden; }
+.page-header .ph-float {
+  position: absolute; border-radius: 50%;
+  background: var(--pfc);
+  opacity: .06; pointer-events: none;
+  animation: floatBubble var(--pfd, 14s) ease-in-out infinite var(--pfdelay, 0s);
+}
+@keyframes floatBubble {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%     { transform: translate(12px,-18px) scale(1.05); }
+  66%     { transform: translate(-8px, 10px) scale(.95); }
+}
+
+/* ── COUNTER ANIMATION ────────────────────────────────── */
+.hkpi-n { transition: color .3s; }
+.hkpi:hover .hkpi-n { color: var(--c2); }
+
+/* ── TAB TRANSITION ───────────────────────────────────── */
+.tab-panel.active {
+  animation: tabFadeIn .3s ease both;
+}
+@keyframes tabFadeIn {
+  from { opacity:0; transform: translateY(8px); }
+  to   { opacity:1; transform: none; }
+}
+
+/* ── LEADER CARD ──────────────────────────────────────── */
+.leader-card {
+  transition: box-shadow .3s cubic-bezier(.2,1,.3,1), transform .3s cubic-bezier(.2,1,.3,1);
+}
+.lc-avatar {
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
+}
+.leader-card:hover .lc-avatar {
+  transform: scale(1.08);
+  box-shadow: 0 4px 16px rgba(0,0,0,.15);
+}
+
+/* ── STRAT CARD ───────────────────────────────────────── */
+.strat-card {
+  transition: box-shadow .3s, transform .3s cubic-bezier(.2,1,.3,1), background .2s;
+}
+.strat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,.08);
+  background: var(--bg);
+}
+.strat-tag { transition: opacity .2s, letter-spacing .2s; }
+.strat-card:hover .strat-tag { opacity:1; letter-spacing: .14em; }
+
+/* ── OFFRE CELL ───────────────────────────────────────── */
+.offre-cell::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--oc) 0%, transparent 50%);
+  opacity: 0; transition: opacity .25s;
+  pointer-events: none;
+}
+.offre-cell:hover::after { opacity: .04; }
+
+@media(max-width:768px){
+  :root { --nav-w: 0px; }
+  .sidebar { display: none; }
+  .tabs-bar { padding: 0 20px; }
+  .content, .roadmap-header, .roadmap-controls { padding-left: 20px; padding-right: 20px; }
+  .rm-board { grid-template-columns: 1fr; }
+  .rm-col { min-height: 300px; }
+}
+</style>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getDatabase, ref, onValue, set, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+    window._fbModules = { initializeApp, getDatabase, ref, onValue, set, remove };
+  </script>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-logo">AVA<em>2i</em></div>
+    <div class="sidebar-tagline">AI & Agentique Partner</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Navigation</div>
+    <button class="nav-item active" onclick="switchTab('centres')">
+      <div class="nav-pip" style="background:var(--c1)"></div>
+      Centres IA
+    </button>
+    <button class="nav-item" onclick="switchTab('leaders')">
+      <div class="nav-pip" style="background:var(--c2)"></div>
+      Leaders CDI
+    </button>
+    <button class="nav-item" onclick="switchTab('offres')">
+      <div class="nav-pip" style="background:var(--c3)"></div>
+      Offres & Produits
+    </button>
+    <button class="nav-item" onclick="switchTab('strategie')">
+      <div class="nav-pip" style="background:#F5C842"></div>
+      Stratégie
+    </button>
+
+    <div class="nav-group-label" style="margin-top:8px;">Planning</div>
+    <button class="nav-item" onclick="switchTab('roadmap')">
+      <div class="nav-pip" style="background:#F97316"></div>
+      Roadmap 90 jours
+    </button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="sidebar-conf">Confidentiel · Board 2026</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TABS BAR -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('centres')">Centres IA</button>
+    <button class="tab-btn" onclick="switchTab('leaders')">Leaders CDI</button>
+    <button class="tab-btn" onclick="switchTab('offres')">Offres & Produits</button>
+    <button class="tab-btn" onclick="switchTab('strategie')">Stratégie</button>
+    <button class="tab-btn" onclick="switchTab('roadmap')">Roadmap 90j</button>
+  </div>
+
+  <!-- ═══════════════ TAB: CENTRES ═══════════════════ -->
+  <div class="tab-panel active" id="tab-centres">
+    <div class="page-header">
+      <div class="ph-eyebrow">Organisation · AVA2i · 2026</div>
+      <h1>Centres de Compétences <em>IA</em></h1>
+      <p>Trois Centres de Compétences spécialisés — structurés pour délivrer les 5 piliers de l'offre IA d'AVA2i avec des leaders CDI dédiés et des accélérateurs propriétaires.</p>
+      <div class="header-kpis">
+        <div class="hkpi"><div class="hkpi-n">3</div><div class="hkpi-l">Centres IA</div></div>
+        <div class="hkpi"><div class="hkpi-n">5</div><div class="hkpi-l">Piliers d'offres</div></div>
+        <div class="hkpi"><div class="hkpi-n">6</div><div class="hkpi-l">Leaders CDI</div></div>
+        <div class="hkpi"><div class="hkpi-n">3</div><div class="hkpi-l">Solutions SaaS</div></div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="s-label reveal" style="--c:var(--c1)">Organisation · Trois Centres</div>
+      <h2 class="section-h reveal d1">3 Centres, <em>5 piliers</em>, un objectif.</h2>
+      <p class="section-sub reveal d2">Les 5 piliers du catalogue AVA2i sont regroupés en 3 Centres cohérents, chacun avec une identité technique forte, un chef de centre CDI, et des accélérateurs propriétaires.</p>
+
+      <div class="centres-grid">
+        <!-- C1 -->
+        <div class="centre-card reveal" style="--cc:var(--c1);--cc-bg:var(--c1-bg)">
+          <div class="cc-top">
+            <div class="cc-stripe"></div>
+            <div class="cc-num">Centre 01</div>
+            <div class="cc-icon">🗄️</div>
+            <div class="cc-name">Data & IA Platform</div>
+            <div class="cc-mission">Fondation de tout déploiement IA performant. Architectures Lakehouse modernes, pipelines ML industrialisés, gouvernance data — sur Snowflake, Databricks et les grandes plateformes cloud.</div>
+          </div>
+          <div class="cc-offers">
+            <div class="co">Pilier 01 — Data Platform & Cloud Architecture</div>
+            <div class="co">Pilier 04 — MLOps & DataOps</div>
+            <div class="co">Gouvernance, FinOps & Data Quality</div>
+          </div>
+          <div class="cc-tags">
+            <span class="ctag">Snowflake</span>
+            <span class="ctag">Databricks</span>
+            <span class="ctag">dbt</span>
+            <span class="ctag">Delta Lake</span>
+            <span class="ctag">Kafka</span>
+            <span class="ctag">Airflow</span>
+            <span class="ctag">MLflow</span>
+            <span class="ctag">Azure / AWS / GCP</span>
+          </div>
+          <div class="cc-footer">
+            <div class="cc-stat"><div class="cc-stat-n">2</div><div class="cc-stat-l">Partenariats certifiés</div></div>
+            <div class="cc-stat"><div class="cc-stat-n">+40</div><div class="cc-stat-l">Projets data en prod</div></div>
+            <div class="cc-stat"><div class="cc-stat-n">-62%</div><div class="cc-stat-l">Réduction coûts cloud</div></div>
+          </div>
+        </div>
+        <!-- C2 -->
+        <div class="centre-card reveal d1" style="--cc:var(--c2);--cc-bg:var(--c2-bg)">
+          <div class="cc-top">
+            <div class="cc-stripe"></div>
+            <div class="cc-num">Centre 02</div>
+            <div class="cc-icon">🤖</div>
+            <div class="cc-name">IA Générative & Agentique</div>
+            <div class="cc-mission">Le cœur de la différenciation AVA2i. Systèmes LLM en production et architectures multi-agents autonomes — robustes, conformes RGPD et DORA, ancrés dans la donnée métier.</div>
+          </div>
+          <div class="cc-offers">
+            <div class="co">Pilier 02 — IA Générative d'entreprise (RAG, LLM)</div>
+            <div class="co">Pilier 03 — IA Agentique (multi-agents, long-terme)</div>
+            <div class="co">Intégration AVAshield & Diplomat en déploiement</div>
+          </div>
+          <div class="cc-tags">
+            <span class="ctag">LangGraph</span>
+            <span class="ctag">LangChain</span>
+            <span class="ctag">CrewAI</span>
+            <span class="ctag">MCP</span>
+            <span class="ctag">RAG</span>
+            <span class="ctag">Claude API</span>
+            <span class="ctag">GPT-4o</span>
+            <span class="ctag">Vector DBs</span>
+            <span class="ctag">Fine-tuning</span>
+          </div>
+          <div class="cc-footer">
+            <div class="cc-stat"><div class="cc-stat-n">3</div><div class="cc-stat-l">Types d'agents</div></div>
+            <div class="cc-stat"><div class="cc-stat-n">DORA</div><div class="cc-stat-l">AI Act · RGPD</div></div>
+            <div class="cc-stat"><div class="cc-stat-n">90j</div><div class="cc-stat-l">Data → agent en prod</div></div>
+          </div>
+        </div>
+        <!-- C3 -->
+        <div class="centre-card reveal d2" style="--cc:var(--c3);--cc-bg:var(--c3-bg)">
+          <div class="cc-top">
+            <div class="cc-stripe"></div>
+            <div class="cc-num">Centre 03</div>
+            <div class="cc-icon">🛡️</div>
+            <div class="cc-name">Conseil, Sécurité & Produits IA</div>
+            <div class="cc-mission">La valeur stratégique et la protection des déploiements IA. Missions de conseil et transformation, opération des solutions propriétaires AVAshield et Diplomat, construction des CoE clients.</div>
+          </div>
+          <div class="cc-offers">
+            <div class="co">Pilier 05 — Conseil & Transformation IA (audit, CoE)</div>
+            <div class="co">AVAshield — Prompt Gateway & Security Layer (SaaS)</div>
+            <div class="co">Diplomat — AI Observability & Control (SaaS)</div>
+          </div>
+          <div class="cc-tags">
+            <span class="ctag">Audit IA</span>
+            <span class="ctag">Roadmap Stratégique</span>
+            <span class="ctag">AI Act</span>
+            <span class="ctag">DORA</span>
+            <span class="ctag">ISO 27001</span>
+            <span class="ctag">CoE IA</span>
+            <span class="ctag">Prompt Security</span>
+            <span class="ctag">LLM Observabilité</span>
+          </div>
+          <div class="cc-footer">
+            <div class="cc-stat"><div class="cc-stat-n">2</div><div class="cc-stat-l">Produits SaaS</div></div>
+            <div class="cc-stat"><div class="cc-stat-n">5</div><div class="cc-stat-l">Normes conformité</div></div>
+            <div class="cc-stat"><div class="cc-stat-n">90j</div><div class="cc-stat-l">CoE opérationnel</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB: LEADERS ═══════════════════ -->
+  <div class="tab-panel" id="tab-leaders">
+    <div class="page-header">
+      <div class="ph-eyebrow">Gouvernance · Leadership</div>
+      <h1>Leaders <em>par Centre</em></h1>
+      <p>C01 et C03 : meilleurs profils sélectionnés dans le pool réel des 129 consultants AVA2i. C02 : Josselin et Paul, créateurs de Diplomat (observabilité IA agentique), PhD & Mines, experts en IA, Observabilité et Agentique.</p>
+    </div>
+    <div class="content">
+
+      <!-- C01 -->
+      <div class="s-label reveal" style="--c:var(--c1)">Centre 01 — Data &amp; IA Platform · Pool AVA2i</div>
+      <div class="leaders-grid" style="margin-bottom:44px;">
+
+        <div class="leader-card reveal" style="--lc:var(--c1);--lc-bg:var(--c1-bg)">
+          <div class="lc-header">
+            <div class="lc-avatar" style="background:rgba(15,127,191,.2);color:var(--c1)">FS</div>
+            <div class="lc-info">
+              <div class="lc-name">Fatine STIRIBA</div>
+              <div class="lc-title">BI &amp; Data Expert</div>
+              <div class="lc-badge">CDI · Chef de Centre C01</div>
+            </div>
+          </div>
+          <div class="lc-centre">Centre 01 · Data &amp; IA Platform — Score pool : 11/15</div>
+          <div class="lc-body">
+            <div class="lc-skills">
+              <span class="lc-skill">Python</span><span class="lc-skill">SQL / PL-SQL</span><span class="lc-skill">NoSQL</span><span class="lc-skill">Databricks</span><span class="lc-skill">Azure</span><span class="lc-skill">Ansible</span><span class="lc-skill">Shell Linux</span>
+            </div>
+            <div class="lc-exp">Meilleur profil CDI Expert Data du pool. Stack Python + Databricks + Azure solide. <strong>Candidate naturelle pour diriger C01.</strong> Certification Snowflake à planifier pour le statut Premier Partner.</div>
+          </div>
+          <div class="lc-certs"><span class="lc-cert">CDI · Pool AVA2i</span><span class="lc-cert">Databricks / Azure</span><span class="lc-cert">→ Snowflake SnowPro à valider</span></div>
+        </div>
+
+        <div class="leader-card reveal d1" style="--lc:var(--c1);--lc-bg:var(--c1-bg)">
+          <div class="lc-header">
+            <div class="lc-avatar" style="background:rgba(15,127,191,.15);color:var(--c1)">IT</div>
+            <div class="lc-info">
+              <div class="lc-name">Izem TAOUFIK</div>
+              <div class="lc-title">Data Engineer Expert</div>
+              <div class="lc-badge" style="background:rgba(124,58,237,.1);color:var(--c2);border-color:rgba(124,58,237,.25)">Freelance · Lead Technique C01</div>
+            </div>
+          </div>
+          <div class="lc-centre">Centre 01 · Data &amp; IA Platform — Score pool : 11/15</div>
+          <div class="lc-body">
+            <div class="lc-skills">
+              <span class="lc-skill">Apache Spark</span><span class="lc-skill">Hadoop</span><span class="lc-skill">Kafka</span><span class="lc-skill">Airflow</span><span class="lc-skill">Python</span><span class="lc-skill">Databricks</span><span class="lc-skill">Azure</span>
+            </div>
+            <div class="lc-exp">Stack Data Engineering la plus complète du pool — Spark, Kafka, Airflow, Databricks natifs. <strong>Lead Technique idéal pour C01.</strong> Passage en CDI à négocier pour ancrer l'expertise durablement.</div>
+          </div>
+          <div class="lc-certs"><span class="lc-cert">Freelance → CDI à convertir</span><span class="lc-cert">Databricks / Azure</span><span class="lc-cert">→ MLflow à compléter</span></div>
+        </div>
+
+      </div>
+
+      <!-- C02 -->
+      <div class="s-label reveal" style="--c:var(--c2)">Centre 02 — IA Générative &amp; Agentique · Fondateurs</div>
+      <div class="reveal d1" style="background:var(--c2-bg);border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:16px 20px;margin-bottom:22px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:1.1rem;flex-shrink:0;">🎓</span>
+        <div style="font-size:.83rem;color:var(--ink2);line-height:1.7;"><strong style="color:var(--ink)">Josselin &amp; Paul</strong> — Créateurs de <strong style="color:var(--c2)">Diplomat</strong>, la plateforme d'observabilité IA agentique d'AVA2i. Mines ParisTech &amp; PhD IA. Experts en IA, Observabilité et Systèmes Agentiques. Hors pool consultant classique — statut à définir (associés, CDI direction, advisory board).</div>
+      </div>
+      <div class="leaders-grid" style="margin-bottom:44px;">
+
+        <div class="leader-card reveal" style="--lc:var(--c2);--lc-bg:var(--c2-bg)">
+          <div class="lc-header">
+            <div class="lc-avatar" style="background:var(--c2);color:#fff">J</div>
+            <div class="lc-info">
+              <div class="lc-name">Josselin</div>
+              <div class="lc-title">Co-créateur Diplomat · Expert IA Agentique</div>
+              <div class="lc-badge">Chef de Centre C02</div>
+            </div>
+          </div>
+          <div class="lc-centre">Centre 02 · IA Générative &amp; Agentique — Fondateur</div>
+          <div class="lc-body">
+            <div class="lc-skills">
+              <span class="lc-skill">IA Agentique</span><span class="lc-skill">Systèmes multi-agents</span><span class="lc-skill">Observabilité IA</span><span class="lc-skill">LLM production</span><span class="lc-skill">Diplomat</span>
+            </div>
+            <div class="lc-exp">Co-créateur de <strong>Diplomat</strong>, la plateforme d'observabilité IA agentique d'AVA2i. Mines ParisTech. Expertise de premier plan sur le tracing d'agents autonomes, l'observabilité LLM et l'industrialisation en entreprise.</div>
+          </div>
+          <div class="lc-certs"><span class="lc-cert">Mines ParisTech</span><span class="lc-cert">Créateur Diplomat</span><span class="lc-cert">IA Agentique &amp; Observabilité</span></div>
+        </div>
+
+        <div class="leader-card reveal d1" style="--lc:var(--c2);--lc-bg:var(--c2-bg)">
+          <div class="lc-header">
+            <div class="lc-avatar" style="background:var(--c2);color:#fff">P</div>
+            <div class="lc-info">
+              <div class="lc-name">Paul</div>
+              <div class="lc-title">Co-créateur Diplomat · PhD IA</div>
+              <div class="lc-badge">Lead Technique C02</div>
+            </div>
+          </div>
+          <div class="lc-centre">Centre 02 · IA Générative &amp; Agentique — Fondateur</div>
+          <div class="lc-body">
+            <div class="lc-skills">
+              <span class="lc-skill">PhD IA</span><span class="lc-skill">RAG &amp; GenAI</span><span class="lc-skill">Architectures LLM</span><span class="lc-skill">Observabilité agents</span><span class="lc-skill">Diplomat</span>
+            </div>
+            <div class="lc-exp">Co-créateur de <strong>Diplomat</strong>. PhD en Intelligence Artificielle. Expert en architectures LLM de production, RAG avancé et systèmes d'observabilité pour agents autonomes. Profil recherche appliquée à l'industrie.</div>
+          </div>
+          <div class="lc-certs"><span class="lc-cert">PhD Intelligence Artificielle</span><span class="lc-cert">Créateur Diplomat</span><span class="lc-cert">GenAI &amp; RAG</span></div>
+        </div>
+
+      </div>
+
+      <!-- C03 -->
+      <div class="s-label reveal" style="--c:var(--c3)">Centre 03 — Conseil, Sécurité &amp; Produits · Pool AVA2i</div>
+      <div class="leaders-grid">
+
+        <div class="leader-card reveal" style="--lc:var(--c3);--lc-bg:var(--c3-bg)">
+          <div class="lc-header">
+            <div class="lc-avatar" style="background:rgba(4,120,87,.2);color:var(--c3)">NH</div>
+            <div class="lc-info">
+              <div class="lc-name">Najoua HAYA</div>
+              <div class="lc-title">IT Risk &amp; Conformité IA</div>
+              <div class="lc-badge">CDI · Chef de Centre C03</div>
+            </div>
+          </div>
+          <div class="lc-centre">Centre 03 · Conseil, Sécurité &amp; Produits — Score pool : 21/25</div>
+          <div class="lc-body">
+            <div class="lc-skills">
+              <span class="lc-skill">ISO 27001</span><span class="lc-skill">ISO 27005</span><span class="lc-skill">NIST</span><span class="lc-skill">ANSSI</span><span class="lc-skill">PCI-DSS</span><span class="lc-skill">DORA</span><span class="lc-skill">RGPD</span>
+            </div>
+            <div class="lc-exp"><strong>Score le plus élevé du pool pour C03.</strong> Stack conformité la plus complète : DORA, RGPD, ISO 27001/27005, NIST, ANSSI, PCI-DSS en CDI. Idéale pour piloter les missions d'audit IA et la gouvernance des déploiements.</div>
+          </div>
+          <div class="lc-certs"><span class="lc-cert">CDI · Pool AVA2i</span><span class="lc-cert">DORA · RGPD · ISO 27001</span><span class="lc-cert">→ Montée en compétence AI Act</span></div>
+        </div>
+
+        <div class="leader-card reveal d1" style="--lc:var(--c3);--lc-bg:var(--c3-bg)">
+          <div class="lc-header">
+            <div class="lc-avatar" style="background:rgba(4,120,87,.15);color:var(--c3)">NI</div>
+            <div class="lc-info">
+              <div class="lc-name">Naoufal IDRISSI KHAMLICHI</div>
+              <div class="lc-title">IT Risk Expert · DORA &amp; GDPR</div>
+              <div class="lc-badge" style="background:rgba(124,58,237,.1);color:var(--c2);border-color:rgba(124,58,237,.25)">Freelance · Lead Conformité C03</div>
+            </div>
+          </div>
+          <div class="lc-centre">Centre 03 · Conseil, Sécurité &amp; Produits — Score pool : 15/25</div>
+          <div class="lc-body">
+            <div class="lc-skills">
+              <span class="lc-skill">ISO 27001</span><span class="lc-skill">DORA</span><span class="lc-skill">GDPR</span><span class="lc-skill">ECB</span><span class="lc-skill">BAIT / VAIT</span><span class="lc-skill">Zabbix</span>
+            </div>
+            <div class="lc-exp">Expert IT Risk avec spécialisation bancaire — DORA, ECB, BAIT/VAIT, GDPR natifs. <strong>Complément parfait de Najoua</strong> sur les réglementations secteur financier. Passage en CDI à envisager.</div>
+          </div>
+          <div class="lc-certs"><span class="lc-cert">Freelance → CDI à évaluer</span><span class="lc-cert">DORA · ECB · BAIT/VAIT</span><span class="lc-cert">→ Spécialisation AI Act</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- ═══════════════ TAB: OFFRES ════════════════════ -->
+  <div class="tab-panel" id="tab-offres">
+    <div class="page-header">
+      <div class="ph-eyebrow">Catalogue · Offres & Solutions</div>
+      <h1>5 piliers d'offres, <em>3 solutions</em>.</h1>
+      <p>Les 5 piliers du catalogue AVA2i et les 3 solutions propriétaires — rattachés à leur Centre de Compétences. Chaque offre dispose d'une équipe dédiée avec expertise concentrée.</p>
+    </div>
+    <div class="content">
+      <div class="s-label reveal" style="--c:var(--c1)">5 piliers d'offres · Répartition par Centre</div>
+      <div class="offres-map reveal d1">
+        <div class="offre-cell" style="--oc:var(--c1)"><div class="offre-num">Pilier 01</div><div class="offre-name">Data Platform & Cloud Architecture</div><div class="offre-centre" style="--oc:var(--c1)">Centre 01</div></div>
+        <div class="offre-cell" style="--oc:var(--c2)"><div class="offre-num">Pilier 02</div><div class="offre-name">IA Générative d'entreprise</div><div class="offre-centre" style="--oc:var(--c2)">Centre 02</div></div>
+        <div class="offre-cell" style="--oc:var(--c2)"><div class="offre-num">Pilier 03</div><div class="offre-name">IA Agentique — L'IA qui agit</div><div class="offre-centre" style="--oc:var(--c2)">Centre 02</div></div>
+        <div class="offre-cell" style="--oc:var(--c1)"><div class="offre-num">Pilier 04</div><div class="offre-name">MLOps & DataOps</div><div class="offre-centre" style="--oc:var(--c1)">Centre 01</div></div>
+        <div class="offre-cell" style="--oc:var(--c3)"><div class="offre-num">Pilier 05</div><div class="offre-name">Conseil & Transformation IA</div><div class="offre-centre" style="--oc:var(--c3)">Centre 03</div></div>
+      </div>
+
+      <div class="s-label reveal" style="--c:var(--c3); margin-top:16px;">Solutions propriétaires · Centre 03</div>
+      <div class="products-grid reveal d1">
+        <div class="product-card" style="--pt:var(--c2);--pt-bg:var(--c2-bg)">
+          <div class="product-top">
+            <div class="product-icon">🛡️</div>
+            <div class="product-name">AVAshield</div>
+            <div class="product-sub">Prompt Gateway & Security Layer</div>
+          </div>
+          <div class="product-body">
+            <div class="product-desc">Le prompt gateway intelligent qui sécurise vos systèmes LLM en production — en temps réel, sans latence perceptible.</div>
+            <div class="product-features">
+              <div class="pf">Détection d'injections de prompts</div>
+              <div class="pf">Sanitisation des outputs LLM</div>
+              <div class="pf">Redaction automatique PII</div>
+              <div class="pf">Audit trail complet & immutable</div>
+              <div class="pf">Support multi-modèles (Claude, GPT, Mistral)</div>
+            </div>
+          </div>
+          <div class="product-footer">
+            <span class="comp-tag">AI Act Art.9</span><span class="comp-tag">RGPD Art.25</span><span class="comp-tag">DORA</span><span class="comp-tag">ISO 27001</span><span class="comp-tag">HDS</span>
+          </div>
+        </div>
+        <div class="product-card" style="--pt:var(--c1);--pt-bg:var(--c1-bg)">
+          <div class="product-top">
+            <div class="product-icon">🔭</div>
+            <div class="product-name">Diplomat</div>
+            <div class="product-sub">AI Observability & Control Platform</div>
+          </div>
+          <div class="product-body">
+            <div class="product-desc">Visibilité totale sur chaque décision de vos agents — trace, mesure, alerte et analyse l'ensemble de vos workflows IA.</div>
+            <div class="product-features">
+              <div class="pf">Tracing distribué des agents IA</div>
+              <div class="pf">Logging des décisions & raisonnements</div>
+              <div class="pf">Tracking des coûts d'inférence</div>
+              <div class="pf">Alerting & détection d'anomalies</div>
+              <div class="pf">Support multi-agents & orchestrateurs</div>
+            </div>
+          </div>
+          <div class="product-footer">
+            <span class="comp-tag">LangSmith-like</span><span class="comp-tag">Multi-agents</span><span class="comp-tag">Grafana</span><span class="comp-tag">Datadog</span>
+          </div>
+        </div>
+        <div class="product-card" style="--pt:var(--c3);--pt-bg:var(--c3-bg)">
+          <div class="product-top">
+            <div class="product-icon">🧠</div>
+            <div class="product-name">Memory Wizard</div>
+            <div class="product-sub">Persistent Agent Memory Layer</div>
+          </div>
+          <div class="product-body">
+            <div class="product-desc">Couche mémoire persistante pour agents autonomes long-terme — apprentissage continu, personnalisation, contextualisation.</div>
+            <div class="product-features">
+              <div class="pf">Mémoire épisodique & sémantique</div>
+              <div class="pf">Vector store managé</div>
+              <div class="pf">Intégration LangGraph & MCP</div>
+              <div class="pf">Profils utilisateurs persistants</div>
+              <div class="pf">Compatible multi-agents</div>
+            </div>
+          </div>
+          <div class="product-footer">
+            <span class="comp-tag">Agents long-terme</span><span class="comp-tag">RAG avancé</span><span class="comp-tag">RGPD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB: STRATÉGIE ════════════════ -->
+  <div class="tab-panel" id="tab-strategie">
+    <div class="page-header">
+      <div class="ph-eyebrow">Recommandations · Board 2026</div>
+      <h1>Priorités pour <em>la mise en place</em>.</h1>
+      <p>Six actions prioritaires pour que les 3 Centres de Compétences IA soient opérationnels et générateurs de revenus d'ici fin 2026.</p>
+    </div>
+    <div class="content">
+      <div class="strat-grid">
+        <div class="strat-card reveal" style="--sc:var(--c1)"><div class="strat-num">01 · Priorité immédiate</div><div class="strat-title">Nommer les 6 leaders CDI en Q1 2026</div><div class="strat-body">Sans les chefs de Centre et leads CDI, les Centres restent des groupements informels sans P&L, sans doctrine et sans capacité à recruter. C'est la condition structurelle de tout le reste.</div><div class="strat-tag">Action : Recrutement immédiat</div></div>
+        <div class="strat-card reveal d1" style="--sc:var(--c2)"><div class="strat-num">02 · Différenciation marché</div><div class="strat-title">Concentrer le Centre 02 sur l'IA Agentique</div><div class="strat-body">L'IA Générative se commoditise. L'avantage concurrentiel d'AVA2i sur 18-24 mois est l'IA Agentique — LangGraph, MCP, multi-agents. Le Centre 02 doit être la référence française.</div><div class="strat-tag">Focus : Agentique 2026</div></div>
+        <div class="strat-card reveal" style="--sc:var(--c3)"><div class="strat-num">03 · Revenus récurrents</div><div class="strat-title">Faire du Centre 03 le pivot de l'ARR</div><div class="strat-body">AVAshield et Diplomat sont les seules sources d'ARR prévisible. Chaque mission de conseil doit générer une opportunité produit. Objectif : 200k€ ARR 2026, 800k€ en 2027.</div><div class="strat-tag">Objectif : 200k€ ARR 2026</div></div>
+        <div class="strat-card reveal d1" style="--sc:#F5C842"><div class="strat-num">04 · Synergie partenaires</div><div class="strat-title">Aligner Centre 01 avec Snowflake & Databricks</div><div class="strat-body">Le Centre 01 est le point d'entrée du co-selling. Chaque deal partenaire passe par lui. Objectif : Snowflake Premier Partner Q3 2026 grâce aux certifications et projets référencés.</div><div class="strat-tag">Cible : Snowflake Premier Q3</div></div>
+        <div class="strat-card reveal" style="--sc:var(--c2)"><div class="strat-num">05 · Acquisition par la preuve</div><div class="strat-title">2 audits de maturité IA par semaine dès Q2</div><div class="strat-body">Le Centre 03 est responsable des audits IA — outil d'entrée commercial d'AVA2i. Chaque audit génère un pipeline pour les Centres 01 et 02. Le Centre 03 est le moteur commercial des deux autres.</div><div class="strat-tag">KPI : 2 audits / semaine</div></div>
+        <div class="strat-card reveal d1" style="--sc:var(--c3)"><div class="strat-num">06 · Gouvernance</div><div class="strat-title">Comité des Centres mensuel</div><div class="strat-body">Les 3 Chefs de Centre se réunissent mensuellement pour synchroniser les pipelines, partager les méthodologies et allouer les ressources entre Centres. Mécanisme anti-silos critique.</div><div class="strat-tag">Gouvernance : Mensuel</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB: ROADMAP ═══════════════════ -->
+  <div class="tab-panel" id="tab-roadmap">
+    <div class="roadmap-header">
+      <div class="ph-eyebrow">Planning · Intégration des équipes</div>
+      <h1>Roadmap <em>90 jours</em> — Transformation IA</h1>
+      <p>Chaque brique représente une action d'intégration des consultants AVA2i dans la transformation. Glissez-déposez les briques pour réorganiser les priorités selon vos contraintes. Ajoutez des briques personnalisées.</p>
+      <div class="roadmap-legend">
+        <div class="legend-pill"><div class="legend-dot" style="--ldc:var(--c1)"></div>Centre 01 — Data & IA Platform</div>
+        <div class="legend-pill"><div class="legend-dot" style="--ldc:var(--c2)"></div>Centre 02 — IA Générative & Agentique</div>
+        <div class="legend-pill"><div class="legend-dot" style="--ldc:var(--c3)"></div>Centre 03 — Conseil, Sécurité & Produits</div>
+        <div class="legend-pill"><div class="legend-dot" style="--ldc:#F97316"></div>Transversal / Gouvernance</div>
+      </div>
+    </div>
+
+    <div class="roadmap-controls">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span class="rm-ctrl-label">Actions :</span>
+      <button class="rm-btn" onclick="openAddModal()">+ Nouvelle brique</button>
+      <button class="rm-btn" onclick="showSetup()" style="border-color:rgba(59,130,246,.3);color:#3B82F6;">⚙ Configurer Firebase</button>
+      <button class="rm-btn" onclick="resetRoadmap()">↺ Réinitialiser</button>
+      <button class="rm-btn danger" onclick="clearRoadmap()">✕ Tout effacer</button>
+      </div>
+      <div id="fb-status" style="display:flex;align-items:center;font-family:var(--ff-m);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:6px 12px;background:var(--white);border:1px solid var(--border);border-radius:4px;">
+        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#F59E0B;margin-right:6px;"></span>Initialisation…
+      </div>
+    </div>
+
+    <div class="rm-board" id="rmBoard">
+      <div class="rm-col" id="col-0">
+        <div class="rm-col-head">
+          <div class="rm-col-phase">Phase 1</div>
+          <div class="rm-col-title">Semaines 1–4</div>
+          <div class="rm-col-sub">Fondations & Nominations</div>
+          <div class="rm-col-count" id="count-0">— briques</div>
+        </div>
+        <div class="rm-col-body" id="body-0" ondragover="onDragOver(event,0)" ondrop="onDrop(event,0)" ondragleave="onDragLeave(event,0)"></div>
+      </div>
+      <div class="rm-col" id="col-1">
+        <div class="rm-col-head">
+          <div class="rm-col-phase">Phase 2</div>
+          <div class="rm-col-title">Semaines 5–8</div>
+          <div class="rm-col-sub">Activation & Premiers livrables</div>
+          <div class="rm-col-count" id="count-1">— briques</div>
+        </div>
+        <div class="rm-col-body" id="body-1" ondragover="onDragOver(event,1)" ondrop="onDrop(event,1)" ondragleave="onDragLeave(event,1)"></div>
+      </div>
+      <div class="rm-col" id="col-2">
+        <div class="rm-col-head">
+          <div class="rm-col-phase">Phase 3</div>
+          <div class="rm-col-title">Semaines 9–12</div>
+          <div class="rm-col-sub">Industrialisation & Scale</div>
+          <div class="rm-col-count" id="count-2">— briques</div>
+        </div>
+        <div class="rm-col-body" id="body-2" ondragover="onDragOver(event,2)" ondrop="onDrop(event,2)" ondragleave="onDragLeave(event,2)"></div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- FIREBASE SETUP MODAL -->
+<div class="modal-overlay" id="setupModal" onclick="closeSetupModal(event)">
+  <div class="modal" style="width:540px;max-width:95vw;">
+    <h3>⚙ Configurer Firebase — Collab temps réel</h3>
+    <div style="font-size:.82rem;color:var(--muted);line-height:1.75;margin-bottom:20px;">
+      Pour activer la synchronisation en temps réel avec ton binôme, crée un projet Firebase gratuit et remplace les valeurs dans le code.
+    </div>
+
+    <div style="background:var(--bg);border-radius:6px;padding:16px 18px;margin-bottom:16px;">
+      <div style="font-family:var(--ff-m);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Étape 1 — Créer le projet</div>
+      <ol style="font-size:.82rem;color:var(--ink2);line-height:2;padding-left:18px;">
+        <li>Va sur <strong>console.firebase.google.com</strong></li>
+        <li>Clique <strong>"Ajouter un projet"</strong> → nomme-le <code style="background:var(--bg1);padding:1px 6px;border-radius:3px;">ava2i-roadmap</code></li>
+        <li>Dans <strong>Realtime Database</strong> → Créer une base → Mode test (30 jours)</li>
+        <li>Dans <strong>Paramètres du projet</strong> → "Ajouter une application Web" → copie le <code>firebaseConfig</code></li>
+      </ol>
+    </div>
+
+    <div style="background:var(--bg);border-radius:6px;padding:16px 18px;margin-bottom:16px;">
+      <div style="font-family:var(--ff-m);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Étape 2 — Coller la config dans le fichier HTML</div>
+      <div style="font-size:.82rem;color:var(--ink2);line-height:1.75;">
+        Ouvre <code style="background:var(--bg1);padding:1px 6px;border-radius:3px;">AVA2i_Centres_IA_V2.html</code> dans un éditeur de texte.<br>
+        Cherche <code style="background:var(--bg1);padding:1px 6px;border-radius:3px;">const FIREBASE_CONFIG</code> et remplace les valeurs<br>
+        <code style="background:var(--bg1);padding:1px 6px;border-radius:3px;">"VOTRE_API_KEY"</code>, <code style="background:var(--bg1);padding:1px 6px;border-radius:3px;">"VOTRE_PROJECT"</code>, etc. par les vraies valeurs copiées.
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:6px;padding:16px 18px;margin-bottom:20px;">
+      <div style="font-family:var(--ff-m);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Étape 3 — Publier sur GitHub Pages</div>
+      <div style="font-size:.82rem;color:var(--ink2);line-height:1.75;">
+        Upload le fichier modifié dans ton repo GitHub → Settings → Pages → branche main.<br>
+        Partage l'URL GitHub Pages avec ton binôme. <strong>Chaque modification est visible en temps réel</strong> pour tous les collaborateurs connectés.
+      </div>
+    </div>
+
+    <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:6px;padding:12px 16px;margin-bottom:20px;font-size:.8rem;color:var(--ink2);line-height:1.65;">
+      💡 <strong>Gratuit</strong> — Firebase Realtime Database offre 1 Go de stockage et 10 Go/mois de transfert. Largement suffisant pour cette roadmap.
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeSetupModal()">Fermer</button>
+      <button class="btn-save" onclick="window.open('https://console.firebase.google.com','_blank');closeSetupModal()">Ouvrir Firebase Console →</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="addModal" onclick="closeModal(event)">
+  <div class="modal">
+    <h3>Ajouter une brique</h3>
+    <div class="modal-field">
+      <label>Titre</label>
+      <input type="text" id="m-title" placeholder="Ex: Audit de maturité IA client X">
+    </div>
+    <div class="modal-field">
+      <label>Description</label>
+      <textarea id="m-desc" placeholder="Description courte de l'action…"></textarea>
+    </div>
+    <div class="modal-field">
+      <label>Centre responsable</label>
+      <select id="m-centre">
+        <option value="c1">Centre 01 — Data & IA Platform</option>
+        <option value="c2">Centre 02 — IA Générative & Agentique</option>
+        <option value="c3">Centre 03 — Conseil, Sécurité & Produits</option>
+        <option value="transv">Transversal / Gouvernance</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Phase (colonne)</label>
+      <select id="m-col">
+        <option value="0">Semaines 1–4 — Fondations</option>
+        <option value="1">Semaines 5–8 — Activation</option>
+        <option value="2">Semaines 9–12 — Industrialisation</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Effort / durée</label>
+      <input type="text" id="m-effort" placeholder="Ex: 2 sem, 1 atelier, 5j/h">
+    </div>
+    <div class="modal-field">
+      <label>Équipe responsable</label>
+      <input type="text" id="m-owner" placeholder="Ex: Chef de Centre 01 + 3 consultants">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn-save" onclick="saveTask()">Ajouter →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── TAB SYSTEM ────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id)?.classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => { if(b.textContent.toLowerCase().includes(id.slice(0,4))) b.classList.add('active'); });
+  document.querySelectorAll('.nav-item').forEach(b => { if(b.getAttribute('onclick')?.includes(id)) b.classList.add('active'); });
+  triggerReveal();
+}
+
+// ── REVEAL ────────────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('v'); obs.unobserve(e.target); } });
+}, { threshold: 0.06 });
+function triggerReveal() {
+  setTimeout(() => {
+    document.querySelectorAll('.tab-panel.active .reveal:not(.v)').forEach(el => obs.observe(el));
+  }, 50);
+}
+triggerReveal();
+
+// ── ROADMAP DATA ──────────────────────────────────────────────
+const C_MAP = {
+  c1:    { label: 'Centre 01', color: 'var(--c1)' },
+  c2:    { label: 'Centre 02', color: 'var(--c2)' },
+  c3:    { label: 'Centre 03', color: 'var(--c3)' },
+  transv:{ label: 'Transversal', color: '#F97316' }
+};
+
+const DEFAULT_TASKS = [
+  // ── PHASE 1 : Semaines 1–4 — Fondations & Structure ──────────────────────────────
+  { id:'t01', col:0, centre:'transv', title:'Nommer les 3 Chefs de Centre CDI', desc:'Valider les fiches de poste, lancer les offres d\'emploi et identifier les candidats internes prioritaires. La nomination est le déclencheur de tout le reste.', effort:'Sem 1', owner:'Direction AVA2i' },
+  { id:'t02', col:0, centre:'transv', title:'Définir la gouvernance des Centres', desc:'Périmètre de chaque Centre, rôle des Chefs, règles d\'arbitrage en cas de ressource partagée, format du Comité mensuel et reporting Board.', effort:'Sem 1–2', owner:'Direction + 3 Chefs' },
+  { id:'t03', col:0, centre:'c1',    title:'C01 — Cartographier le pool Data & MLOps existant', desc:'Identifier parmi les 129 consultants ceux qui peuvent rejoindre C01. Évaluer les niveaux (junior/confirmé/expert), les certifications Snowflake/Databricks actuelles et les gaps.', effort:'Sem 1–2', owner:'Chef de Centre 01' },
+  { id:'t04', col:0, centre:'c2',    title:'C02 — Inventaire compétences IA Gen & Agentique', desc:'Sondage structuré de tous les consultants : maîtrise LangChain, LangGraph, CrewAI, MCP, Vector DBs. Résultat : matrice de compétences C02 et plan de montée en niveau.', effort:'Sem 1–2', owner:'Chef de Centre 02' },
+  { id:'t05', col:0, centre:'c3',    title:'C03 — Identifier les profils Conseil & Conformité', desc:'Repérer dans le pool les consultants avec expérience en audit IT, conformité (DORA, RGPD), gestion de programme. Candidats prioritaires pour missions d\'audit IA.', effort:'Sem 1–2', owner:'Chef de Centre 03' },
+  { id:'t06', col:0, centre:'transv', title:'Créer les espaces collaboratifs des 3 Centres', desc:'Canaux Slack dédiés (C01/C02/C03), confluence de doctrine par Centre, répertoire de CV et de livrables type. Infrastructure de connaissance dès J+7.', effort:'Sem 1', owner:'Ops + Chefs Centre' },
+  { id:'t07', col:0, centre:'c1',    title:'C01 — Plan de certifications Snowflake & Databricks', desc:'Lister les certifications manquantes pour atteindre Snowflake Premier Partner. Planifier les passages de certifs pour 5 consultants prioritaires sur 60 jours. Budget formation.', effort:'Sem 2–3', owner:'Chef C01 + Sophie B.' },
+  { id:'t08', col:0, centre:'c2',    title:'C02 — Sessions d\'onboarding LangGraph & MCP', desc:'2 ateliers internes de 4h : présentation des frameworks agentiques pour tous les consultants C02. Format pair-programming. Objectif : niveau commun suffisant pour les missions pilotes.', effort:'2 × 4h · Sem 2–3', owner:'RL (Lead Technique)' },
+  { id:'t09', col:0, centre:'c3',    title:'C03 — Template de l\'audit de maturité IA', desc:'Concevoir le livrable standard de l\'audit AVA2i : 6 dimensions (données, infra, compétences, processus, gouvernance, stratégie), scoring, recommandations. Tester en interne.', effort:'Sem 2–3', owner:'CM + C03 équipe' },
+
+  // ── PHASE 2 : Semaines 5–8 — Activation & Premiers livrables ─────────────────────
+  { id:'t10', col:1, centre:'transv', title:'Premier Comité des Centres IA — kick-off mensuel', desc:'Réunion de synchronisation mensuelle des 3 Chefs de Centre. Format fixe : pipeline en cours, ressources partagées, blocages, doctrine commune. Ordre du jour standardisé.', effort:'Mensuel · J+30', owner:'3 Chefs de Centre' },
+  { id:'t11', col:1, centre:'c1',    title:'C01 — Affecter les premiers consultants data aux missions', desc:'Sur la base de la cartographie (t03), affecter les 8–10 consultants Data & MLOps les plus qualifiés aux missions ouvertes. Process de staffing C01 opérationnel.', effort:'Sem 5', owner:'Chef C01 + Direction' },
+  { id:'t12', col:1, centre:'c2',    title:'C02 — Première mission pilote IA Agentique', desc:'Sélectionner le use case agentique le plus simple et le plus visible parmi le pipeline client. Affecter 2–3 consultants C02. Sprint de 4 semaines avec démo intermédiaire à S+6.', effort:'Sem 5–8', owner:'Chef C02 + AK + RL' },
+  { id:'t13', col:1, centre:'c3',    title:'C03 — Lancer les 5 premiers audits de maturité IA', desc:'Exécuter le template finalisé (t09) sur 5 premiers comptes. Debriefs en équipe pour affiner le livrable. Objectif : 2 audits/semaine en régime de croisière dès S+8.', effort:'Sem 5–8', owner:'C03 complet (CM + JD)' },
+  { id:'t14', col:1, centre:'c1',    title:'C01 — Passage des 5 premières certifications Snowflake', desc:'Accompagner et valider les 5 consultants prioritaires identifiés en t07. Suivi hebdo avec Chef C01. Chaque certif obtenue est communiquée au Board.', effort:'Sem 5–7', owner:'Sophie B. + consultants' },
+  { id:'t15', col:1, centre:'c2',    title:'C02 — Créer le catalogue offres agentiques (v1)', desc:'Formaliser 3 offres standard C02 : agent simple (2 sem), multi-agents (4–6 sem), agent long-terme (8–12 sem). Pour chaque offre : TJM cible, profils affectés, livrables, méthode.', effort:'Sem 6–7', owner:'Chef C02 + Direction' },
+  { id:'t16', col:1, centre:'c3',    title:'C03 — Doctrine conformité by design pour les 3 Centres', desc:'Produire le guide interne de conformité IA : checklist DORA/RGPD/AI Act applicable à chaque type de mission. Partagé avec tous les consultants via Confluence C03.', effort:'Sem 6', owner:'CM + JD' },
+  { id:'t17', col:1, centre:'transv', title:'Dashboard KPIs Centres — revue hebdo Direction', desc:'5 métriques suivies chaque semaine : consultants affectés/disponibles par Centre, nb de missions actives, certifications obtenues, satisfaction client, utilisation des accélérateurs.', effort:'Continu dès Sem 5', owner:'Direction + Ops' },
+
+  // ── PHASE 3 : Semaines 9–12 — Industrialisation & Scale ──────────────────────────
+  { id:'t18', col:2, centre:'transv', title:'Recruter les 3 Leads CDI manquants (C01, C02, C03)', desc:'Sur base des fiches de poste définies en t01, finaliser les recrutements des Leads Techniques (Thomas M., Romain L., Julien D.). Intégration en S+10 au plus tard.', effort:'Sem 9–11', owner:'Direction + RH' },
+  { id:'t19', col:2, centre:'c1',    title:'C01 — Recruter 3 nouveaux consultants Data/MLOps', desc:'Profils cibles : 2 Data Engineer senior (Databricks/Spark), 1 MLOps Engineer (MLflow/Kubernetes). Onboarding immédiat sur les missions en cours C01.', effort:'Sem 9–12', owner:'Chef C01 + RH' },
+  { id:'t20', col:2, centre:'c2',    title:'C02 — Recruter 1 Architecte IA Agentique senior', desc:'Profil rare : maîtrise LangGraph + systèmes distribués + expérience prod en banque/assurance. Ce recrutement débloque les missions Grand Compte complexes.', effort:'Sem 9–12', owner:'Chef C02 + RH' },
+  { id:'t21', col:2, centre:'c3',    title:'C03 — Programme de montée en compétence conformité IA', desc:'Former 6 consultants du pool (issus de C01/C02) aux fondamentaux DORA, AI Act, RGPD. Ils deviennent les référents conformité embarqués dans chaque projet IA.', effort:'2 jours · Sem 9–10', owner:'CM + JD' },
+  { id:'t22', col:2, centre:'transv', title:'Revue 90 jours — Board presentation', desc:'Bilan complet des 3 Centres : consultants affectés, certifications obtenues, missions livrées, catalogue d\'offres finalisé, KPIs et ajustements Q3.', effort:'1 journée · J+90', owner:'Direction + 3 Chefs Centre' },
+  { id:'t23', col:2, centre:'c2',    title:'C02 — Retour d\'expérience mission pilote agentique', desc:'Document REX de la première mission pilote C02 (t12) : architecture déployée, difficultés, apprentissages, template réutilisable. Partagé avec tout le pool.', effort:'Sem 10', owner:'AK + RL' },
+  { id:'t24', col:2, centre:'c1',    title:'C01 — Accélérateurs propriétaires : catalogue v1', desc:'Recenser tous les accélérateurs techniques produits par les consultants C01 (scripts dbt, templates Airflow, notebooks MLflow). Bibliothèque réutilisable avec versionning.', effort:'Sem 10–12', owner:'Chef C01 + TM' },
+];
+
+let tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
+let dragId = null;
+let addCol = 0;
+let _db = null, _dbRef = null;
+let _fbReady = false;
+
+// ── FIREBASE INIT ─────────────────────────────────────────────
+// Replace these values with your own Firebase project config
+const FIREBASE_CONFIG = {
+  apiKey:            "VOTRE_API_KEY",
+  authDomain:        "VOTRE_PROJECT.firebaseapp.com",
+  databaseURL:       "https://VOTRE_PROJECT-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "VOTRE_PROJECT",
+  storageBucket:     "VOTRE_PROJECT.appspot.com",
+  messagingSenderId: "VOTRE_SENDER_ID",
+  appId:             "VOTRE_APP_ID"
+};
+
+function initFirebase() {
+  try {
+    const { initializeApp, getDatabase, ref, onValue } = window._fbModules;
+    const app = initializeApp(FIREBASE_CONFIG);
+    _db = getDatabase(app);
+    _dbRef = ref(_db, 'ava2i/roadmap');
+    setStatus('connecting');
+
+    // Listen for real-time changes from any collaborator
+    onValue(_dbRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        tasks = data;
+        renderBoard();
+      } else {
+        // First time: push default tasks
+        saveTasks();
+      }
+      if (!_fbReady) {
+        _fbReady = true;
+        setStatus('connected');
+      }
+    }, (error) => {
+      console.warn('Firebase error:', error);
+      setStatus('offline');
+    });
+  } catch(e) {
+    console.warn('Firebase init failed:', e);
+    setStatus('offline');
+  }
+}
+
+function setStatus(s) {
+  const el = document.getElementById('fb-status');
+  if (!el) return;
+  const states = {
+    connecting: { dot: '#F59E0B', text: 'Connexion…' },
+    connected:  { dot: '#10B981', text: 'Sync live ✓' },
+    offline:    { dot: '#6B7280', text: 'Mode local' },
+    saving:     { dot: '#3B82F6', text: 'Sauvegarde…' },
+  };
+  const st = states[s] || states.offline;
+  el.innerHTML = `<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${st.dot};margin-right:6px;flex-shrink:0;"></span>${st.text}`;
+}
+
+function saveTasks() {
+  if (_db && _dbRef) {
+    setStatus('saving');
+    const { set } = window._fbModules;
+    set(_dbRef, tasks)
+      .then(() => setStatus('connected'))
+      .catch(() => setStatus('offline'));
+  }
+  // Always keep local fallback
+  try { localStorage.setItem('ava2i_roadmap', JSON.stringify(tasks)); } catch(e) {}
+}
+
+// Init Firebase after modules load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (window._fbModules) initFirebase();
+    else setStatus('offline');
+  }, 400);
+});
+
+function renderBoard() {
+  [0,1,2].forEach(col => {
+    const body = document.getElementById('body-' + col);
+    const colTasks = tasks.filter(t => t.col === col);
+    body.innerHTML = '';
+    colTasks.forEach(t => { body.appendChild(makeBrick(t)); });
+    // Add button
+    const btn = document.createElement('button');
+    btn.className = 'add-task-btn';
+    btn.textContent = 'Ajouter une brique';
+    btn.onclick = () => openAddModal(col);
+    body.appendChild(btn);
+    document.getElementById('count-' + col).textContent = colTasks.length + ' brique' + (colTasks.length > 1 ? 's' : '');
+  });
+}
+
+function makeBrick(t) {
+  const c = C_MAP[t.centre] || C_MAP.transv;
+  const div = document.createElement('div');
+  div.className = 'task-brick';
+  div.draggable = true;
+  div.dataset.id = t.id;
+  div.style.setProperty('--tc', c.color);
+  div.innerHTML = `
+    <div class="tb-centre"><div class="tb-centre-dot"></div>${c.label}</div>
+    <div class="tb-title">${t.title}</div>
+    ${t.desc ? `<div class="tb-desc">${t.desc}</div>` : ''}
+    <div class="tb-footer">
+      ${t.effort ? `<div class="tb-effort">${t.effort}</div>` : '<div></div>'}
+      <div style="display:flex;gap:5px;align-items:center;">
+        ${t.owner ? `<span class="tb-owner">${t.owner}</span>` : ''}
+        <button onclick="deleteTask('${t.id}')" style="border:none;background:none;cursor:pointer;color:var(--muted);font-size:.75rem;padding:2px 5px;border-radius:3px;transition:color .15s,background .15s" onmouseover="this.style.color='#DC2626';this.style.background='rgba(220,38,38,.08)'" onmouseout="this.style.color='var(--muted)';this.style.background='none'" title="Supprimer">✕</button>
+      </div>
+    </div>`;
+  div.addEventListener('dragstart', e => { dragId = t.id; div.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+  div.addEventListener('dragend', () => { dragId = null; div.classList.remove('dragging'); document.querySelectorAll('.rm-col-body').forEach(b => b.classList.remove('drag-over','drag-over-valid')); });
+  return div;
+}
+
+function onDragOver(e, col) {
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.rm-col-body').forEach(b => b.classList.remove('drag-over-valid'));
+  document.getElementById('body-' + col).classList.add('drag-over-valid');
+}
+function onDragLeave(e, col) {
+  document.getElementById('body-' + col).classList.remove('drag-over','drag-over-valid');
+}
+function onDrop(e, col) {
+  e.preventDefault();
+  document.querySelectorAll('.rm-col-body').forEach(b => b.classList.remove('drag-over','drag-over-valid'));
+  if (!dragId) return;
+  const t = tasks.find(x => x.id === dragId);
+  if (t) { t.col = col; saveTasks(); renderBoard(); }
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks(); renderBoard();
+}
+
+function openAddModal(col = 0) {
+  addCol = col;
+  document.getElementById('m-col').value = col;
+  document.getElementById('m-title').value = '';
+  document.getElementById('m-desc').value = '';
+  document.getElementById('m-effort').value = '';
+  document.getElementById('m-owner').value = '';
+  document.getElementById('addModal').classList.add('open');
+  setTimeout(() => document.getElementById('m-title').focus(), 100);
+}
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('addModal'))
+    document.getElementById('addModal').classList.remove('open');
+}
+function saveTask() {
+  const title = document.getElementById('m-title').value.trim();
+  if (!title) return;
+  const t = {
+    id: 't' + Date.now(),
+    col: parseInt(document.getElementById('m-col').value),
+    centre: document.getElementById('m-centre').value,
+    title,
+    desc:   document.getElementById('m-desc').value.trim(),
+    effort: document.getElementById('m-effort').value.trim(),
+    owner:  document.getElementById('m-owner').value.trim(),
+  };
+  tasks.push(t);
+  saveTasks(); renderBoard();
+  document.getElementById('addModal').classList.remove('open');
+}
+function resetRoadmap() {
+  if (confirm('Réinitialiser la roadmap avec les briques par défaut ?')) {
+    tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
+    saveTasks(); renderBoard();
+  }
+}
+function clearRoadmap() {
+  if (confirm('Effacer toutes les briques ?')) {
+    tasks = [];
+    saveTasks(); renderBoard();
+  }
+}
+
+// keyboard close modal
+document.addEventListener('keydown', e => { if(e.key==='Escape') document.getElementById('addModal').classList.remove('open'); });
+
+// ── MAGNETIC HOVER on centre + leader cards ────────────────────
+function initMagnetic() {
+  document.querySelectorAll('.centre-card, .strat-card, .product-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width  * 100).toFixed(1);
+      const y = ((e.clientY - r.top)  / r.height * 100).toFixed(1);
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+    });
+  });
+}
+
+// ── FLOATING DOTS in page headers ─────────────────────────────
+function spawnDots(header) {
+  const dots = [
+    { size: 80,  x: '8%',  y: '20%', color: 'var(--c1)', delay: '0s',   dur: '12s' },
+    { size: 120, x: '70%', y: '10%', color: 'var(--c2)', delay: '-4s',  dur: '17s' },
+    { size: 60,  x: '85%', y: '60%', color: 'var(--c3)', delay: '-8s',  dur: '14s' },
+    { size: 50,  x: '40%', y: '75%', color: '#F5C842',   delay: '-2s',  dur: '10s' },
+  ];
+  dots.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'ph-float';
+    el.style.cssText = `width:${d.size}px;height:${d.size}px;left:${d.x};top:${d.y};--pfc:${d.color};--pfdelay:${d.delay};--pfd:${d.dur};`;
+    header.appendChild(el);
+  });
+}
+document.querySelectorAll('.page-header, .roadmap-header').forEach(spawnDots);
+
+// ── ANIMATED COUNTERS on KPIs ──────────────────────────────────
+function animateCounters() {
+  document.querySelectorAll('.hkpi-n').forEach(el => {
+    const raw = el.textContent.trim();
+    const num = parseFloat(raw.replace(/[^0-9.]/g, ''));
+    if (isNaN(num) || num === 0) return;
+    const suffix = raw.replace(/[0-9.]/g, '');
+    let start = null;
+    const dur = 900;
+    const step = ts => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = (Number.isInteger(num) ? Math.round(num * ease) : (num * ease).toFixed(1)) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    const obs2 = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) { requestAnimationFrame(step); obs2.unobserve(el); }
+    }, { threshold: 0.5 });
+    obs2.observe(el);
+  });
+}
+
+// ── BRICK STAGGER on render ────────────────────────────────────
+const origRender = renderBoard;
+window.renderBoard = function() {
+  origRender();
+  document.querySelectorAll('.task-brick').forEach((b, i) => {
+    b.style.animationDelay = (i * 0.045) + 's';
+  });
+  updateCounts();
+};
+
+function updateCounts() {
+  [0,1,2].forEach(col => {
+    const n = tasks.filter(t => t.col === col).length;
+    document.getElementById('count-' + col).textContent = n + ' brique' + (n !== 1 ? 's' : '');
+  });
+}
+
+// ── TAB switch hook ────────────────────────────────────────────
+const origSwitch = window.switchTab;
+window.switchTab = function(id) {
+  origSwitch(id);
+  setTimeout(() => { initMagnetic(); animateCounters(); }, 80);
+};
+
+
+function showSetup() { document.getElementById('setupModal').classList.add('open'); }
+function closeSetupModal(e) {
+  if (!e || e.target === document.getElementById('setupModal'))
+    document.getElementById('setupModal').classList.remove('open');
+}
+
+// init
+renderBoard();
+initMagnetic();
+animateCounters();
+</script>
+</body>
+</html>
